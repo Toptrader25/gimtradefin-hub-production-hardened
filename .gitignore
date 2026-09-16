@@ -11,3 +11,4 @@ storage/framework/views/*
 bootstrap/cache/*.php
 .DS_Store
 *.log
+backend/vendor/

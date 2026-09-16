@@ -12,10 +12,12 @@ WORKDIR /var/www/html
 COPY . .
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN if [ -f composer.lock ]; then \
-        composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts; \
+ENV COMPOSER_AUDIT_ABANDONED=ignore
+RUN composer config -g audit.block-insecure false \
+    && if [ -f composer.lock ]; then \
+        composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts --no-audit; \
     else \
-        composer update --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts; \
+        composer update --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts --no-audit; \
     fi \
     && composer dump-autoload --optimize --no-dev
 
