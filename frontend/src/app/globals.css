@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  /* Ink — deep navy, primary text, headers, primary actions */
+  --color-ink: #14213D;
+  --color-ink-70: #14213DB3;
+
+  /* Chart — cool paper-grey background (deliberately not warm cream) */
+  --color-chart: #EEF0EA;
+  --color-chart-dim: #E3E6DD;
+  --color-paper: #FBFBF9;
+
+  /* Seal — verification green. Functional: only ever means "verified". */
+  --color-seal: #1F6E4A;
+  --color-seal-dim: #E7F1EB;
+
+  /* Manifest — muted steel for secondary text */
+  --color-manifest: #5B6B7C;
+
+  /* Signal — sparse amber for attention/new states only */
+  --color-signal: #C97A2B;
+  --color-signal-dim: #FBF0E4;
+
+  --color-line: #D7DBCF;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-chart: var(--color-chart);
+  --color-paper: var(--color-paper);
+  --color-seal: var(--color-seal);
+  --color-manifest: var(--color-manifest);
+  --color-signal: var(--color-signal);
+  --color-line: var(--color-line);
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+body {
+  background: var(--color-chart);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Evidence-pipeline connector line used in the hero signature element */
+.pipeline-connector {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-manifest) 0,
+    var(--color-manifest) 4px,
+    transparent 4px,
+    transparent 10px
+  );
+  height: 1px;
+}
+

@@ -1,0 +1,6 @@
+<?php
+namespace App\Console\Commands;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use App\Services\LearningGovernanceScaleService;
+class MonitorModelDrift extends Command {protected $signature='leadhunter:monitor-drift {model_key} {--threshold=0.2}';protected $description='Detect simple production score-distribution drift';public function handle(LearningGovernanceScaleService $s):int{$key=$this->argument('model_key');$m=DB::table('lh_model_versions')->where('model_key',$key)->where('status','production')->first();if(!$m){$this->error('No production model');return self::FAILURE;}$baseline=DB::table('lh_predictions')->where('model_version_id',$m->id)->where('predicted_at','<',now()->subDays(30))->avg('probability');$current=DB::table('lh_predictions')->where('model_version_id',$m->id)->where('predicted_at','>=',now()->subDays(30))->avg('probability');$drift=abs((float)$current-(float)$baseline);if($drift>=(float)$this->option('threshold')){$s->createDriftAlert(['drift_type'=>'mean_probability_shift','model_key'=>$key,'baseline_value'=>$baseline,'current_value'=>$current,'drift_score'=>$drift,'severity'=>$drift>=0.4?'critical':'high','evidence'=>['window_days'=>30]]);$this->warn('Drift alert created');}else $this->info('No threshold breach');return self::SUCCESS;}}
