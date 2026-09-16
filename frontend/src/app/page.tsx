@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { EvidencePipeline } from '@/components/EvidencePipeline';
 import { VerificationStamp } from '@/components/VerificationStamp';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
+import { EmptyState } from '@/components/EmptyState';
 import { getStats, getOpportunities } from '@/lib/api';
 import { OpportunityCategory } from '@/types/opportunity';
 
@@ -62,7 +64,7 @@ export default async function Home() {
 
       <main>
         {/* HERO */}
-        <section className="max-w-6xl mx-auto px-6 pt-16 pb-14">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-12 sm:pb-14">
           <p className="font-mono text-xs tracking-[0.2em] text-seal font-medium mb-5">
             EVIDENCE-GROUNDED TRADE INTELLIGENCE
           </p>
@@ -97,7 +99,7 @@ export default async function Home() {
           </form>
 
           {stats && (
-            <div className="flex gap-10 mt-12 font-mono">
+            <div className="flex flex-wrap gap-8 sm:gap-10 mt-12 font-mono">
               <div>
                 <div className="text-2xl text-ink font-medium">{stats.published_opportunities}</div>
                 <div className="text-[11px] text-manifest tracking-wide mt-0.5">PUBLISHED OPPORTUNITIES</div>
@@ -179,6 +181,28 @@ export default async function Home() {
           </section>
         )}
 
+        {/* LIVE FEED — empty / unavailable */}
+        {previewItems.length === 0 && (
+          <section className="max-w-6xl mx-auto px-6 py-16">
+            <p className="font-mono text-[10px] tracking-widest text-seal font-medium mb-2">
+              LIVE FEED
+            </p>
+            <h2 className="font-display font-bold text-2xl text-ink mb-6">Recently Published</h2>
+            <EmptyState
+              title={preview === null ? 'Marketplace data is warming up' : 'No published opportunities yet'}
+              body={
+                preview === null
+                  ? 'The API could not be reached just now. Browse again shortly, or submit a real lead for review while we reconnect.'
+                  : 'Once a reviewer publishes a verified opportunity, it appears here with its evidence trail. You can submit a lead anytime.'
+              }
+              primaryHref="/submit"
+              primaryLabel="Submit an Opportunity"
+              secondaryHref="/login"
+              secondaryLabel="Sign in"
+            />
+          </section>
+        )}
+
         {/* HOW VERIFICATION WORKS */}
         <section className="max-w-6xl mx-auto px-6 py-16">
           <h2 className="font-display font-bold text-2xl md:text-3xl text-ink max-w-md">
@@ -230,19 +254,7 @@ export default async function Home() {
         </section>
       </main>
 
-      <footer className="bg-ink text-paper/70 mt-auto">
-        <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between gap-6">
-          <div>
-            <span className="font-display font-bold text-paper">GiMtradefin</span>
-            <p className="text-xs mt-2 max-w-xs text-paper/50">
-              Evidence-grounded trade intelligence. Every opportunity traced to its source.
-            </p>
-          </div>
-          <div className="font-mono text-xs text-paper/50">
-            &copy; {new Date().getFullYear()} GiMtradefin
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

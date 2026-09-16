@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
 import { LoginForm } from '@/components/LoginForm';
 import { getCurrentUser } from '@/lib/auth';
 
@@ -17,11 +18,7 @@ export default async function LoginPage() {
         <h1 className="font-display font-bold text-2xl text-ink mb-8">Welcome back.</h1>
         <LoginForm />
       </main>
-      <footer className="bg-ink text-paper/50 mt-auto">
-        <div className="max-w-6xl mx-auto px-6 py-8 font-mono text-xs">
-          &copy; {new Date().getFullYear()} GiMtradefin
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

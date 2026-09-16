@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
-    Route::get('/health', fn () => response()->json(['status' => 'ok']));
+    Route::get('/health', fn () => response()->json(['status' => 'ok', 'service' => 'gimtradefin-hub-api']));
 
     Route::get('/opportunities', [OpportunityController::class, 'index']);
     Route::get('/opportunities/{id}', [OpportunityController::class, 'show']);

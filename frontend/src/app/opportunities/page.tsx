@@ -2,6 +2,8 @@ import { getOpportunities } from '@/lib/api';
 import { OpportunityCategory } from '@/types/opportunity';
 import { VerificationStamp } from '@/components/VerificationStamp';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
+import { EmptyState } from '@/components/EmptyState';
 import Link from 'next/link';
 
 const CATEGORY_LABELS: Record<OpportunityCategory, string> = {
@@ -39,7 +41,7 @@ export default async function OpportunitiesPage({
       page,
     });
   } catch {
-    apiError = 'Could not reach the opportunities API. Is the Laravel backend running?';
+    apiError = 'Could not reach the opportunities API. The marketplace backend may be redeploying — try again shortly.';
   }
 
   const activeFilters = { category: params.category, country: params.country, search: params.search };
@@ -48,7 +50,7 @@ export default async function OpportunitiesPage({
     <>
       <SiteHeader />
 
-      <main className="max-w-5xl mx-auto px-6 py-12 flex-1 w-full">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12 flex-1 w-full">
         <p className="font-mono text-xs tracking-[0.2em] text-seal font-medium mb-3">
           LIVE — HUMAN-VERIFIED ONLY
         </p>
@@ -100,17 +102,34 @@ export default async function OpportunitiesPage({
         </form>
 
         {apiError && (
-          <div className="rounded-sm border border-signal bg-signal-dim p-4 text-ink text-sm font-mono">
-            {apiError}
+          <div className="mb-8">
+            <div className="rounded-sm border border-signal bg-signal-dim p-4 text-ink text-sm font-mono mb-4">
+              {apiError}
+            </div>
+            <EmptyState
+              title="Marketplace temporarily unavailable"
+              body="You can still submit a lead for review, or sign in to your dashboard. Published listings will return once the API is healthy."
+              primaryHref="/submit"
+              primaryLabel="Submit an Opportunity"
+              secondaryHref="/login"
+              secondaryLabel="Sign in"
+            />
           </div>
         )}
 
         {result && result.data.length === 0 && (
-          <div className="rounded-sm border border-line bg-paper p-10 text-center text-manifest">
-            {params.search || params.country
-              ? 'No published opportunities match these filters.'
-              : 'No published opportunities yet. Once the intelligence engine verifies one, it appears here.'}
-          </div>
+          <EmptyState
+            title={params.search || params.country ? 'No matches for these filters' : 'No published opportunities yet'}
+            body={
+              params.search || params.country
+                ? 'Try clearing filters or broadening your search. Published leads are human-verified only.'
+                : 'Nothing is public until a GiMtradefin reviewer publishes it. Submit a real opportunity to start the review pipeline.'
+            }
+            primaryHref="/submit"
+            primaryLabel="Submit an Opportunity"
+            secondaryHref={params.search || params.country ? '/opportunities' : '/login'}
+            secondaryLabel={params.search || params.country ? 'Clear filters' : 'Sign in'}
+          />
         )}
 
         <div className="space-y-4">
@@ -161,11 +180,7 @@ export default async function OpportunitiesPage({
         )}
       </main>
 
-      <footer className="bg-ink text-paper/50 mt-auto">
-        <div className="max-w-6xl mx-auto px-6 py-8 font-mono text-xs">
-          &copy; {new Date().getFullYear()} GiMtradefin
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

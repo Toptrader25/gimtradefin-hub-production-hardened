@@ -9,10 +9,9 @@ use Illuminate\Database\Seeder;
 class DevelopmentSeeder extends Seeder
 {
     /**
-     * Dev/staging only. Every record here is explicitly status="test"
-     * per section 11 of the architecture doc — the production system
-     * must NEVER represent test data as genuine commercial intelligence.
-     * Do not run this seeder against production.
+     * Local-dev only. status="test" records are NEVER returned by the
+     * public API (Opportunity::scopePublished). Prefer DemoSeeder for
+     * staging UIs that need published listings.
      */
     public function run(): void
     {

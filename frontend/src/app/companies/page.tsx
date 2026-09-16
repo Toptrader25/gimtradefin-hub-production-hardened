@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { getCompanies } from '@/lib/api';
 import { VerificationStamp } from '@/components/VerificationStamp';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
+import { EmptyState } from '@/components/EmptyState';
 
 export default async function CompaniesPage({
   searchParams,
@@ -16,14 +18,14 @@ export default async function CompaniesPage({
   try {
     result = await getCompanies({ search: params.search, country: params.country, page });
   } catch {
-    apiError = 'Could not reach the companies API. Is the Laravel backend running?';
+    apiError = 'Could not reach the companies API. The marketplace backend may be redeploying — try again shortly.';
   }
 
   return (
     <>
       <SiteHeader />
 
-      <main className="max-w-5xl mx-auto px-6 py-12 flex-1 w-full">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12 flex-1 w-full">
         <p className="font-mono text-xs tracking-[0.2em] text-seal font-medium mb-3">
           COMPANY INTELLIGENCE
         </p>
@@ -61,15 +63,34 @@ export default async function CompaniesPage({
         </form>
 
         {apiError && (
-          <div className="rounded-sm border border-signal bg-signal-dim p-4 text-ink text-sm font-mono">
-            {apiError}
+          <div className="mb-8">
+            <div className="rounded-sm border border-signal bg-signal-dim p-4 text-ink text-sm font-mono mb-4">
+              {apiError}
+            </div>
+            <EmptyState
+              title="Directory temporarily unavailable"
+              body="Company profiles load from the same API as opportunities. Try again shortly, or submit a lead while we reconnect."
+              primaryHref="/submit"
+              primaryLabel="Submit an Opportunity"
+              secondaryHref="/login"
+              secondaryLabel="Sign in"
+            />
           </div>
         )}
 
         {result && result.data.length === 0 && (
-          <div className="rounded-sm border border-line bg-paper p-10 text-center text-manifest">
-            {params.search || params.country ? 'No companies match these filters.' : 'No verified companies yet.'}
-          </div>
+          <EmptyState
+            title={params.search || params.country ? 'No companies match these filters' : 'No companies with published opportunities yet'}
+            body={
+              params.search || params.country
+                ? 'Try a different country or clear your search.'
+                : 'Companies appear here only after at least one of their opportunities is published. Submit a lead to get started.'
+            }
+            primaryHref="/submit"
+            primaryLabel="Submit an Opportunity"
+            secondaryHref={params.search || params.country ? '/companies' : '/opportunities'}
+            secondaryLabel={params.search || params.country ? 'Clear filters' : 'Browse opportunities'}
+          />
         )}
 
         <div className="grid sm:grid-cols-2 gap-4">
@@ -121,11 +142,7 @@ export default async function CompaniesPage({
         )}
       </main>
 
-      <footer className="bg-ink text-paper/50 mt-auto">
-        <div className="max-w-6xl mx-auto px-6 py-8 font-mono text-xs">
-          &copy; {new Date().getFullYear()} GiMtradefin
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

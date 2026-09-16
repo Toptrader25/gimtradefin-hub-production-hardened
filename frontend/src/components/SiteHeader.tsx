@@ -10,7 +10,7 @@ export async function SiteHeader() {
 
   return (
     <header className="border-b border-line bg-paper/80 backdrop-blur sticky top-0 z-10">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         <Link href="/" className="flex items-baseline gap-2 shrink-0">
           <span className="font-display font-bold text-lg text-ink tracking-tight">GiMtradefin</span>
           <span className="font-mono text-[10px] text-manifest tracking-widest">HUB</span>
@@ -35,7 +35,7 @@ export async function SiteHeader() {
           )}
         </nav>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {user ? (
             <>
               <NotificationBell
@@ -62,12 +62,38 @@ export async function SiteHeader() {
           )}
           <Link
             href="/submit"
-            className="text-sm font-medium bg-ink text-paper px-4 py-2 rounded-sm hover:bg-ink/90 transition-colors"
+            className="text-sm font-medium bg-ink text-paper px-3 sm:px-4 py-2 rounded-sm hover:bg-ink/90 transition-colors"
           >
-            Submit an Opportunity
+            <span className="sm:hidden">Submit</span>
+            <span className="hidden sm:inline">Submit an Opportunity</span>
           </Link>
         </div>
       </div>
+
+      {/* Narrow-viewport secondary nav */}
+      <nav className="md:hidden border-t border-line px-4 py-2 flex gap-4 overflow-x-auto font-medium text-sm text-ink">
+        <Link href="/opportunities" className="whitespace-nowrap hover:text-seal transition-colors">
+          Opportunities
+        </Link>
+        <Link href="/companies" className="whitespace-nowrap hover:text-seal transition-colors">
+          Companies
+        </Link>
+        {user && (
+          <Link href="/dashboard" className="whitespace-nowrap hover:text-seal transition-colors">
+            Dashboard
+          </Link>
+        )}
+        {user && (user.role === 'admin' || user.role === 'reviewer') && (
+          <Link href="/admin" className="whitespace-nowrap hover:text-seal transition-colors">
+            Admin
+          </Link>
+        )}
+        {!user && (
+          <Link href="/register" className="whitespace-nowrap hover:text-seal transition-colors">
+            Register
+          </Link>
+        )}
+      </nav>
     </header>
   );
 }
